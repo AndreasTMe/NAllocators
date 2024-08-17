@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NAllocators", "NAllocators\NAllocators.csproj", "{F81BDB62-31C0-46D6-B790-F11C6AF0173A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NAllocators.Tests", "NAllocators.Tests\NAllocators.Tests.csproj", "{C7C2A078-F09F-4DF3-A4B0-8C4E21F3FBC9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F81BDB62-31C0-46D6-B790-F11C6AF0173A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F81BDB62-31C0-46D6-B790-F11C6AF0173A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F81BDB62-31C0-46D6-B790-F11C6AF0173A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F81BDB62-31C0-46D6-B790-F11C6AF0173A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7C2A078-F09F-4DF3-A4B0-8C4E21F3FBC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7C2A078-F09F-4DF3-A4B0-8C4E21F3FBC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7C2A078-F09F-4DF3-A4B0-8C4E21F3FBC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7C2A078-F09F-4DF3-A4B0-8C4E21F3FBC9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
