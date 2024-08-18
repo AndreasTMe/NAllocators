@@ -45,7 +45,27 @@ public abstract class AbstractAllocator : IAllocator, IDisposable
         }
     }
 
+    public UnsafeBuffer<T> New<T>(int count)
+        where T : unmanaged
+    {
+        unsafe
+        {
+            var totalSize = sizeof(T) * count;
+            var ptr       = (T*)Allocate(totalSize);
+            return new UnsafeBuffer<T>(ptr, totalSize);
+        }
+    }
+
     public void Delete<T>(ref UnsafeHandle<T> handle)
+        where T : unmanaged
+    {
+        unsafe
+        {
+            Free(handle.Ptr, handle.Size);
+        }
+    }
+
+    public void Delete<T>(ref UnsafeBuffer<T> handle)
         where T : unmanaged
     {
         unsafe
