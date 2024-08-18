@@ -34,6 +34,14 @@ public abstract class AbstractAllocator : IAllocator, IDisposable
         bufferOffset = 0;
     }
 
+    ~AbstractAllocator() => Dispose(false);
+
+    protected abstract unsafe void* Allocate(int size);
+
+    protected abstract unsafe void Free(void* ptr, int size);
+
+    public abstract void Clear();
+
     public UnsafeHandle<T> New<T>()
         where T : unmanaged
     {
@@ -74,11 +82,34 @@ public abstract class AbstractAllocator : IAllocator, IDisposable
         }
     }
 
-    public abstract void Clear();
+    public void Dispose()
+    {
+        if (bufferSize == 0)
+        {
+            return;
+        }
 
-    protected abstract unsafe void* Allocate(int size);
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
 
-    protected abstract unsafe void Free(void* ptr, int size);
+    protected virtual void Dispose(bool disposing)
+    {
+        if (_isDisposed)
+        {
+            return;
+        }
+
+        if (disposing)
+        {
+            unsafe
+            {
+                NativeMemory.Free(buffer);
+            }
+        }
+
+        _isDisposed = true;
+    }
 
     protected static nuint AlignForward(nuint address)
     {
@@ -91,25 +122,5 @@ public abstract class AbstractAllocator : IAllocator, IDisposable
         }
 
         return newAddress;
-    }
-
-    public void Dispose()
-    {
-        if (bufferSize == 0)
-        {
-            return;
-        }
-
-        if (!_isDisposed)
-        {
-            unsafe
-            {
-                NativeMemory.Free(buffer);
-            }
-
-            _isDisposed = true;
-        }
-
-        GC.SuppressFinalize(this);
     }
 }

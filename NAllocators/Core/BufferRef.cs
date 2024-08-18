@@ -3,11 +3,10 @@
 public readonly struct BufferRef<T> : IEquatable<BufferRef<T>>
     where T : unmanaged
 {
-    private static readonly T Default = default;
-
     private readonly unsafe T*  _ptr;
     private readonly        int _index;
 
+    // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
     internal unsafe BufferRef(T* ptr, int index, int count)
     {
         if ((uint)index >= (uint)count)

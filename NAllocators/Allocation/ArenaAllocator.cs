@@ -11,6 +11,8 @@ public sealed class ArenaAllocator : AbstractAllocator, IEquatable<ArenaAllocato
     {
     }
 
+    ~ArenaAllocator() => Dispose(false);
+
     public override void Clear()
     {
         unsafe

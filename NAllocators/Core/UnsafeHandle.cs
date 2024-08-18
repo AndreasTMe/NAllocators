@@ -58,7 +58,7 @@ public readonly struct UnsafeHandle<T> : IEquatable<UnsafeHandle<T>>
         }
     }
 
-    public override bool Equals(object? obj) => obj is UnsafeHandle<T> @ref && Equals(@ref);
+    public override bool Equals(object? obj) => obj is UnsafeHandle<T> handle && Equals(handle);
 
     public override int GetHashCode()
     {

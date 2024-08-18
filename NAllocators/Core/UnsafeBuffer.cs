@@ -48,7 +48,7 @@ public readonly struct UnsafeBuffer<T> : IEquatable<UnsafeBuffer<T>>
         }
     }
 
-    public override bool Equals(object? obj) => obj is UnsafeBuffer<T> @ref && Equals(@ref);
+    public override bool Equals(object? obj) => obj is UnsafeBuffer<T> buffer && Equals(buffer);
 
     public override int GetHashCode()
     {
