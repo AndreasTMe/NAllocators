@@ -111,7 +111,7 @@ public abstract class AbstractAllocator : IAllocator, IDisposable
         _isDisposed = true;
     }
 
-    protected static nuint AlignForward(nuint address)
+    protected static nuint GetAlignedAddress(nuint address)
     {
         var newAddress = address;
         var modulo     = newAddress & ((nuint)Alignment - 1);
@@ -123,4 +123,6 @@ public abstract class AbstractAllocator : IAllocator, IDisposable
 
         return newAddress;
     }
+
+    private static int GetAlignedOffset(int value) => (value + (Alignment - 1)) & ~(Alignment - 1);
 }

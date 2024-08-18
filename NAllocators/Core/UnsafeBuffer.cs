@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 namespace NAllocators.Core;
 
@@ -12,51 +11,23 @@ public readonly struct UnsafeBuffer<T> : IEquatable<UnsafeBuffer<T>>
     internal unsafe T*  Ptr  { get; }
     internal        int Size { get; }
 
-    public BufferRef<T> this[int index]
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
-        {
-            unsafe
-            {
-                return new BufferRef<T>(Ptr, index * sizeof(T), Size);
-            }
-        }
-    }
+    public unsafe BufferRef<T> this[int index] => new(Ptr, index * sizeof(T), Size);
 
-    public UnsafeBuffer()
-    {
-        unsafe
-        {
-            Ptr = (T*)Unsafe.AsPointer(ref Unsafe.NullRef<T>());
-        }
+    public unsafe UnsafeBuffer() => ArgumentNullException.ThrowIfNull(Ptr);
 
-        Size = 0;
-    }
-
-    internal unsafe UnsafeBuffer(T* ptr, int size)
+    internal unsafe UnsafeBuffer(void* ptr, int size)
     {
-        Ptr  = ptr;
+        ArgumentNullException.ThrowIfNull(ptr);
+
         Size = size;
+        Ptr  = (T*)ptr;
     }
 
-    public bool Equals(UnsafeBuffer<T> other)
-    {
-        unsafe
-        {
-            return Ptr == other.Ptr;
-        }
-    }
+    public unsafe bool Equals(UnsafeBuffer<T> other) => Ptr == other.Ptr;
 
     public override bool Equals(object? obj) => obj is UnsafeBuffer<T> buffer && Equals(buffer);
 
-    public override int GetHashCode()
-    {
-        unsafe
-        {
-            return unchecked((int)(long)Ptr);
-        }
-    }
+    public override unsafe int GetHashCode() => unchecked((int)(long)Ptr);
 
     public static bool operator ==(UnsafeBuffer<T> left, UnsafeBuffer<T> right) => left.Equals(right);
 

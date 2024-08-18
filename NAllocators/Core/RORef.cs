@@ -5,41 +5,22 @@ public readonly struct RORef<T> : IEquatable<RORef<T>>
 {
     private readonly unsafe T* _ptr;
 
-    public T Value
-    {
-        get
-        {
-            unsafe
-            {
-                if (_ptr == (void*)0)
-                {
-                    return default;
-                }
+    public unsafe T Value => *_ptr;
 
-                return *_ptr;
-            }
-        }
+    public unsafe RORef() => ArgumentNullException.ThrowIfNull(_ptr);
+
+    internal unsafe RORef(T* ptr)
+    {
+        ArgumentNullException.ThrowIfNull(ptr);
+
+        _ptr = ptr;
     }
 
-    internal unsafe RORef(T* ptr) => _ptr = ptr;
-
-    public bool Equals(RORef<T> other)
-    {
-        unsafe
-        {
-            return _ptr == other._ptr;
-        }
-    }
+    public unsafe bool Equals(RORef<T> other) => _ptr == other._ptr;
 
     public override bool Equals(object? obj) => obj is RORef<T> @ref && Equals(@ref);
 
-    public override int GetHashCode()
-    {
-        unsafe
-        {
-            return unchecked((int)(long)_ptr);
-        }
-    }
+    public override unsafe int GetHashCode() => unchecked((int)(long)_ptr);
 
     public static bool operator ==(RORef<T> left, RORef<T> right) => left.Equals(right);
 

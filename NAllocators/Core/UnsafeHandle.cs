@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 namespace NAllocators.Core;
 
@@ -12,61 +11,24 @@ public readonly struct UnsafeHandle<T> : IEquatable<UnsafeHandle<T>>
     internal unsafe T*  Ptr  { get; }
     internal        int Size { get; }
 
-    public RWRef<T> RWRef
-    {
-        get
-        {
-            unsafe
-            {
-                return new RWRef<T>(Ptr);
-            }
-        }
-    }
+    public unsafe RWRef<T> RWRef => new(Ptr);
+    public unsafe RORef<T> RORef => new(Ptr);
 
-    public RORef<T> RORef
-    {
-        get
-        {
-            unsafe
-            {
-                return new RORef<T>(Ptr);
-            }
-        }
-    }
+    public unsafe UnsafeHandle() => ArgumentNullException.ThrowIfNull(Ptr);
 
-    public UnsafeHandle()
+    internal unsafe UnsafeHandle(void* ptr, int size)
     {
-        unsafe
-        {
-            Ptr = (T*)Unsafe.AsPointer(ref Unsafe.NullRef<T>());
-        }
+        ArgumentNullException.ThrowIfNull(ptr);
 
-        Size = 0;
-    }
-
-    internal unsafe UnsafeHandle(T* ptr, int size)
-    {
-        Ptr  = ptr;
         Size = size;
+        Ptr  = (T*)ptr;
     }
 
-    public bool Equals(UnsafeHandle<T> other)
-    {
-        unsafe
-        {
-            return Ptr == other.Ptr;
-        }
-    }
+    public unsafe bool Equals(UnsafeHandle<T> other) => Ptr == other.Ptr;
 
     public override bool Equals(object? obj) => obj is UnsafeHandle<T> handle && Equals(handle);
 
-    public override int GetHashCode()
-    {
-        unsafe
-        {
-            return unchecked((int)(long)Ptr);
-        }
-    }
+    public override unsafe int GetHashCode() => unchecked((int)(long)Ptr);
 
     public static bool operator ==(UnsafeHandle<T> left, UnsafeHandle<T> right) => left.Equals(right);
 

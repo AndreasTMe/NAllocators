@@ -13,20 +13,16 @@ public sealed class ArenaAllocator : AbstractAllocator, IEquatable<ArenaAllocato
 
     ~ArenaAllocator() => Dispose(false);
 
-    public override void Clear()
+    public override unsafe void Clear()
     {
-        unsafe
-        {
-            NativeMemory.Clear(buffer, (nuint)bufferSize);
-        }
-
+        NativeMemory.Clear(buffer, (nuint)bufferSize);
         bufferOffset = 0;
     }
 
     protected override unsafe void* Allocate(int size)
     {
         var currentPosition = (nuint)buffer + (nuint)bufferOffset;
-        var positionOffset  = AlignForward(currentPosition);
+        var positionOffset  = GetAlignedAddress(currentPosition);
         positionOffset -= (nuint)buffer;
 
         if ((int)positionOffset + size > bufferSize)
@@ -34,10 +30,8 @@ public sealed class ArenaAllocator : AbstractAllocator, IEquatable<ArenaAllocato
             return Unsafe.AsPointer(ref Unsafe.NullRef<byte>());
         }
 
-        var ptr = &((byte*)buffer)[positionOffset];
         bufferOffset += size;
-
-        return ptr;
+        return (byte*)buffer + positionOffset;
     }
 
     protected override unsafe void Free(void* ptr, int size)
@@ -68,13 +62,7 @@ public sealed class ArenaAllocator : AbstractAllocator, IEquatable<ArenaAllocato
 
     public override bool Equals(object? obj) => obj is ArenaAllocator other && Equals(other);
 
-    public override int GetHashCode()
-    {
-        unsafe
-        {
-            return ((nuint)buffer).GetHashCode();
-        }
-    }
+    public override unsafe int GetHashCode() => ((nuint)buffer).GetHashCode();
 
     public static bool operator ==(ArenaAllocator lhs, ArenaAllocator rhs) => lhs.Equals(rhs);
 

@@ -6,57 +6,31 @@ public readonly struct BufferRef<T> : IEquatable<BufferRef<T>>
     private readonly unsafe T*  _ptr;
     private readonly        int _index;
 
+    public unsafe RWRef<T> RWRef => new(&_ptr[_index]);
+
+    public unsafe RORef<T> RORef => new(&_ptr[_index]);
+
+    public unsafe BufferRef() => ArgumentNullException.ThrowIfNull(_ptr);
+
     // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
-    internal unsafe BufferRef(T* ptr, int index, int count)
+    internal unsafe BufferRef(void* ptr, int index, int count)
     {
+        ArgumentNullException.ThrowIfNull(ptr);
+
         if ((uint)index >= (uint)count)
         {
             throw new IndexOutOfRangeException();
         }
 
-        _ptr   = ptr;
         _index = index;
+        _ptr   = (T*)ptr;
     }
 
-    public RWRef<T> RWRef
-    {
-        get
-        {
-            unsafe
-            {
-                return new RWRef<T>(&_ptr[_index]);
-            }
-        }
-    }
-
-    public RORef<T> RORef
-    {
-        get
-        {
-            unsafe
-            {
-                return new RORef<T>(&_ptr[_index]);
-            }
-        }
-    }
-
-    public bool Equals(BufferRef<T> other)
-    {
-        unsafe
-        {
-            return _ptr == other._ptr;
-        }
-    }
+    public unsafe bool Equals(BufferRef<T> other) => _ptr == other._ptr;
 
     public override bool Equals(object? obj) => obj is BufferRef<T> @ref && Equals(@ref);
 
-    public override int GetHashCode()
-    {
-        unsafe
-        {
-            return unchecked((int)(long)_ptr);
-        }
-    }
+    public override unsafe int GetHashCode() => unchecked((int)(long)_ptr);
 
     public static bool operator ==(BufferRef<T> left, BufferRef<T> right) => left.Equals(right);
 
